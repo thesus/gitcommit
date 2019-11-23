@@ -8,10 +8,6 @@ import gitlab
 
 logger = logging.getLogger("gitlab_bridge")
 
-# TODO: look for access token, otherwise try public api
-GITLAB_PRIVATE_TOKEN = os.environ["GITLAB_PRIVATE_TOKEN"]
-
-
 class GitlabRenderer(BaseRenderer):
     """Searches a merge request for the current branch and proposes commit messages based on them."""
 
@@ -32,15 +28,21 @@ class GitlabRenderer(BaseRenderer):
 
         self.branch = pygit.get_current_branch()
 
+        if "GITLAB_PRIVATE_TOKEN" in os.environ:
+            self.private_token = os.environ["GITLAB_PRIVATE_TOKEN"]
+        else:
+            self.private_token = None
+
+
     def connect(self):
         """Connects to the API and sets the internal connection parameter."""
         logger.info(
             "Connecting to {} with {} as token".format(
-                self.server, GITLAB_PRIVATE_TOKEN
+                self.server, self.private_token
             )
         )
 
-        self.connection = gitlab.Gitlab(self.server, private_token=GITLAB_PRIVATE_TOKEN)
+        self.connection = gitlab.Gitlab(self.server, private_token=self.private_token)
 
         self.connection.auth()
         logger.info("Connecting succesful")
@@ -83,6 +85,10 @@ class GitlabRenderer(BaseRenderer):
         Returns:
             data: dict containing keys with the `remote` prefix
         """
+        # Do not run method if no private token is set via env variable
+        if not self.private_token:
+            return {}
+
         self.connect()
         self.project = self.setup_project()
         self.mergerequest = self.crawl_mergerequest()
