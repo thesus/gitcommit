@@ -7,4 +7,4 @@ class FileExtension:
         return ext
 
     def get_filename(filepath):
-        return os.path.basename
+        return os.path.basename(filepath)

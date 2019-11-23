@@ -36,22 +36,21 @@ class CodeAnalysisRenderer(BaseRenderer):
                 ]
             )
         )
-        return result
+        return {"code": result}
 
     def func_changes(self, changes):
         added = []
         removed = []
         changed = []
         for new, old in changes:
-            ext = FileExtension.get_extension(new.path)
             # get funcs in new version
             visitor = FuncVisitor(self.pygit.repo[new.id].data)
-            visitor.visit(ext)
+            visitor.visit(new.path)
             new_funcs = visitor.funcs
 
             # get funcs in old version
             visitor.content = self.pygit.repo[old.id].data
-            visitor.visit(ext)
+            visitor.visit(old.path)
             old_funcs = visitor.funcs
 
             # find added, removed and already existing functions
@@ -60,14 +59,14 @@ class CodeAnalysisRenderer(BaseRenderer):
             ]
             added.extend(
                 [
-                    n.name
+                    n
                     for n in new_funcs
                     if not any([o for o in old_funcs if n.name == o.name])
                 ]
             )
             removed.extend(
                 [
-                    o.name
+                    o
                     for o in old_funcs
                     if not any([n for n in new_funcs if o.name == n.name])
                 ]
@@ -98,10 +97,10 @@ class CodeAnalysisRenderer(BaseRenderer):
                         and o <= existing_func[1].end_lineno
                     ]
                 ):
-                    changed.append(existing_func[0].name)
+                    changed.append(existing_func[0])
 
         return {
-            "added_functions": added,
-            "removed_functions": removed,
-            "changed_functions": changed,
+            "added_funcs": added,
+            "removed_funcs": removed,
+            "changed_funcs": changed,
         }
