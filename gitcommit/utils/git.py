@@ -37,8 +37,8 @@ class PygitHelper:
         o_files = []
         n_files = []
         for delta in deltas:
-            n_files.append(delta.new_file.id)
-            o_files.append(delta.old_file.id)
+            n_files.append(delta.new_file)
+            o_files.append(delta.old_file)
 
         return n_files, o_files
 
