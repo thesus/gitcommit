@@ -1,16 +1,15 @@
 import os
 from pygit2 import Repository, GIT_SORT_TIME
 
+
 class PygitHelper:
-    
     def __init__(self):
         """ Initialize repository object to current working directory
     
         """
-        self.repo = Repository(os.getcwd()) 
+        self.repo = Repository(os.getcwd())
 
-
-    def get_diff(self, filepath, commit_depth = 1):
+    def get_diff(self, filepath, commit_depth=1):
         """ Get different lines of a staged file and the its commit_depth-commit version.
 
         Returns:
@@ -21,8 +20,7 @@ class PygitHelper:
                 for line in hunk.lines:
                     yield line.new_lineno, line.old_lineno
 
-
-    def get_files(self, rev_a = 0, rev_b = 1):
+    def get_files(self, rev_a=0, rev_b=1):
         """ Get all files from commit_depth-commit.
 
         Args:
@@ -33,7 +31,7 @@ class PygitHelper:
             new_files: Files from new commit specified above.
             old_files: Files from old commit specified above.
         """
-        # Iterate over all commits 
+        # Iterate over all commits
         deltas = self.repo.diff("HEAD~" + str(rev_a), "HEAD~" + str(rev_b)).deltas
 
         o_files = []
@@ -43,7 +41,6 @@ class PygitHelper:
             o_files.append(delta.old_file.id)
 
         return n_files, o_files
-
 
     def get_remote(self):
         """ Get configured remotes
@@ -55,7 +52,7 @@ class PygitHelper:
 
         remotes = {}
 
-        for rep in self.repo.remotes: 
+        for rep in self.repo.remotes:
             remotes[rep.name] = rep.url
 
         return remotes

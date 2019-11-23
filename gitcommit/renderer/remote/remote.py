@@ -8,6 +8,7 @@ import gitlab
 
 logger = logging.getLogger("gitlab_bridge")
 
+
 class GitlabRenderer(BaseRenderer):
     """Searches a merge request for the current branch and proposes commit messages based on them."""
 
@@ -33,13 +34,10 @@ class GitlabRenderer(BaseRenderer):
         else:
             self.private_token = None
 
-
     def connect(self):
         """Connects to the API and sets the internal connection parameter."""
         logger.info(
-            "Connecting to {} with {} as token".format(
-                self.server, self.private_token
-            )
+            "Connecting to {} with {} as token".format(self.server, self.private_token)
         )
 
         self.connection = gitlab.Gitlab(self.server, private_token=self.private_token)
