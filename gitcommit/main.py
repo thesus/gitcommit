@@ -3,8 +3,9 @@ import logging
 from jinja2 import Environment, FileSystemLoader, meta, Template
 
 # from renderer.base import BaseRenderer
-from config.config import get_config
+from renderer import GitlabRenderer
 
+from config.config import get_config
 
 ROOT_DIR = "./"
 
@@ -33,7 +34,7 @@ def setup_logging():
 
 setup_logging()
 
-RENDERERS = []
+RENDERERS = [GitlabRenderer]
 # RENDERES = [BaseRenderer]
 
 
