@@ -79,3 +79,21 @@ class PygitHelper:
         current_branch = (self.repo.head.name).rsplit("/", 1)[1]
 
         return current_branch
+
+    def get_commit_history(self, length = 10):
+        """ Get commit history
+
+        Returns:
+            commits: List of pygit2.Commit objects containing information about
+                the commit
+        """
+        commits = []
+
+        for commit in self.repo.walk(self.repo.head.target, GIT_SORT_TIME):
+            if (length == 0):
+                return commits
+
+            commits.append(type(commit))
+            length -= 1
+
+        return commits
