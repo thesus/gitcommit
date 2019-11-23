@@ -3,8 +3,9 @@ import logging
 from jinja2 import Environment, FileSystemLoader, meta, Template
 
 # from renderer.base import BaseRenderer
-from config.config import get_config
+from gitcommit.renderer import GitlabRenderer
 
+from gitcommit.config.config import get_config
 
 ROOT_DIR = "./"
 
@@ -33,7 +34,7 @@ def setup_logging():
 
 setup_logging()
 
-RENDERERS = []
+RENDERERS = [GitlabRenderer]
 # RENDERES = [BaseRenderer]
 
 
@@ -53,12 +54,21 @@ class TemplateLoader:
         self.config = get_config(ROOT_DIR + "config.ini")
 
     def run(self):
-        for renderer in RENDERERS:
-            instance = renderer(self.template, self.variables, self.config)
+        data = {}
+        renderers = []
+        for renderer_class in RENDERERS:
+            renderer = renderer_class(self.variables, self.config)
+            renderers.append(renderer)
 
-            # TODO: is a template renderable multiple times?
-            self.template = instance.render_template()
+            data.update(renderer.render_template_data())
 
+        rendered = self.template.render(data)
+
+        print(rendered)
+
+        # Run succes methods on rendererers
+        for renderer in renderers:
+            renderer.success()
 
 if __name__ == "__main__":
     instance = TemplateLoader("template")

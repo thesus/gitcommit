@@ -1,4 +1,10 @@
-/venv
-
+venv
+__pycache__
 
 *.pyc
+
+# pytest coverage cache
+.coverage
+
+# Local environment variables
+.env
