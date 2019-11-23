@@ -20,7 +20,7 @@ class PygitHelper:
                 for line in hunk.lines:
                     yield line.new_lineno, line.old_lineno
 
-    def get_files(self, rev_a=0, rev_b=1):
+    def get_files(self, rev_a=0, rev_b=None):
         """ Get all files from commit_depth-commit.
 
         Args:
@@ -31,8 +31,11 @@ class PygitHelper:
             new_files: Files from new commit specified above.
             old_files: Files from old commit specified above.
         """
-        # Iterate over all commits
-        deltas = self.repo.diff("HEAD~" + str(rev_a), "HEAD~" + str(rev_b)).deltas
+        if not rev_b:
+            deltas = self.repo.diff("HEAD~" + str(rev_a), cached=True).deltas
+        else:
+            # Iterate over all commits
+            deltas = self.repo.diff("HEAD~" + str(rev_a), "HEAD~" + str(rev_b)).deltas
 
         o_files = []
         n_files = []
@@ -42,7 +45,7 @@ class PygitHelper:
 
         return n_files, o_files
 
-    def get_files_tuple(self, rev_a = 0, rev_b = 1):
+    def get_files_tuple(self, rev_a=0, rev_b=None):
         """ Get all files from commit_depth-commit.
 
         Args:
@@ -52,15 +55,17 @@ class PygitHelper:
         Returns:
             files: List of tuple containing new and old files
         """
-        # Iterate over all commits
-        deltas = self.repo.diff("HEAD~" + str(rev_a), "HEAD~" + str(rev_b)).deltas
+        if not rev_b:
+            deltas = self.repo.diff("HEAD~" + str(rev_a), cached=True).deltas
+        else:
+            # Iterate over all commits
+            deltas = self.repo.diff("HEAD~" + str(rev_a), "HEAD~" + str(rev_b)).deltas
 
         files = []
         for delta in deltas:
             files.append((delta.new_file, delta.old_file))
 
-        return files        
-
+        return files
 
     def get_remote(self):
         """ Get configured remotes
@@ -100,7 +105,7 @@ class PygitHelper:
 
         return current_branch
 
-    def get_commit_history(self, length = 10):
+    def get_commit_history(self, length=10):
         """ Get commit history
 
         Returns:
@@ -110,7 +115,7 @@ class PygitHelper:
         commits = []
 
         for commit in self.repo.walk(self.repo.head.target, GIT_SORT_TIME):
-            if (length == 0):
+            if length == 0:
                 return commits
 
             commits.append(type(commit))
