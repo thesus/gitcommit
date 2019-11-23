@@ -87,3 +87,13 @@ class PygitHelper:
         branches_remote = list(self.repo.branches.remote)
 
         return branches_local, branches_remote
+
+    def get_current_branch(self):
+        """ Get current branch
+
+        Returns:
+            current_branch: Name of the branch currently checked out
+        """
+        current_branch = (self.repo.head.name).rsplit("/", 1)[1]
+
+        return current_branch
