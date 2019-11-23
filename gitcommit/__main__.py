@@ -1,13 +1,10 @@
 import logging
-
 from jinja2 import Environment, FileSystemLoader, meta, Template
-
-# from renderer.base import BaseRenderer
 from gitcommit.renderer import GitlabRenderer, HistoryRenderer, MessageRenderer
-
 from gitcommit.config.config import get_config
 
 ROOT_DIR = "./"
+RENDERERS = [GitlabRenderer, HistoryRenderer]
 
 
 def setup_logging():
@@ -30,12 +27,6 @@ def setup_logging():
     root.addHandler(handler)
 
     return root
-
-
-setup_logging()
-
-RENDERERS = [GitlabRenderer, HistoryRenderer]
-# RENDERES = [BaseRenderer]
 
 
 class TemplateLoader:
@@ -72,5 +63,7 @@ class TemplateLoader:
 
 
 if __name__ == "__main__":
+    setup_logging()
+
     instance = TemplateLoader("template")
     instance.run()
