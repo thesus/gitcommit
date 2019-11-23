@@ -52,7 +52,6 @@ class TemplateLoader:
         # TODO: Use different configs for different projects
         self.config = get_config(ROOT_DIR + "config.ini")
 
-
     def run(self):
         for renderer in RENDERERS:
             instance = renderer(self.template, self.variables, self.config)
