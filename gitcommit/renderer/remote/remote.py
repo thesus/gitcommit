@@ -1,14 +1,12 @@
 from gitcommit.renderer import BaseRenderer
+from gitcommit.utils.git import PygitHelper
 
+import re
 import os
 import logging
 import gitlab
 
 logger = logging.getLogger("gitlab_bridge")
-
-# Infer that from repo
-GITLAB_INSTANCE_ADDR = "https://gitlab.lrz.de"
-REPOSITORY = ""
 
 # TODO: look for access token, otherwise try public api
 GITLAB_PRIVATE_TOKEN = os.environ["GITLAB_PRIVATE_TOKEN"]
@@ -21,16 +19,29 @@ class GitlabRenderer(BaseRenderer):
         self.variables = variables
         self.config = config
 
+        pygit = PygitHelper()
+
+        remotes = pygit.get_remote()
+
+        # FIXME: Only a remote named origin works atm
+        match = re.search('(?<=\@)(.*?)(?=\:)', remotes['origin'])
+        self.server = "https://" + match.group(0)
+
+        match = re.search('(?<=\:)(.*?)(?=\.git)', remotes['origin'])
+        self.repository = match.group(0)
+
+        self.branch = pygit.get_current_branch()
+
     def connect(self):
         """Connects to the API and sets the internal connection parameter."""
         logger.info(
             "Connecting to {} with {} as token".format(
-                GITLAB_INSTANCE_ADDR, GITLAB_PRIVATE_TOKEN
+                self.server, GITLAB_PRIVATE_TOKEN
             )
         )
 
         self.connection = gitlab.Gitlab(
-            GITLAB_INSTANCE_ADDR, private_token=GITLAB_PRIVATE_TOKEN
+            self.server, private_token=GITLAB_PRIVATE_TOKEN
         )
 
         self.connection.auth()
@@ -38,13 +49,12 @@ class GitlabRenderer(BaseRenderer):
 
     def setup_project(self):
         """Returns the id of a given project."""
-        # TODO (till): find project dynamically
-        return self.connection.projects.get("ge39rec/gitcommit")
+        return self.connection.projects.get(self.repository)
 
     def find_mr(self):
-        # TODO (till): use current branch for detecting merge request
+        """Returns a list of merge requests for the current branch."""
         return self.project.mergerequests.list(
-            source_branch="1-include-information-via-issue-trackers-to-commit-messages"
+            source_branch=self.branch
         )
 
     def parse_checklist(checklist):
