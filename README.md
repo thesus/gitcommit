@@ -20,3 +20,12 @@ pip install -r requirements/development.txt
 ```
 
 Take a look at the cli at `src/main.py`
+
+## Tests
+To run the tests use pytest in the repo-root.
+
+```sh
+pytest --cov gitcommit
+```
+
+This runs all tests and prints the current coverage to the terminal.
