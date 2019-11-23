@@ -1,30 +1,21 @@
-from .visitor import Visitor
-from .func_lister import FuncLister
-from .func import Func
+from gitcommit.renderer.code_analysis.visitor import Visitor
+from gitcommit.renderer.code_analysis.func.func_lister import FuncLister
+from gitcommit.renderer.code_analysis.func.func import Func
 import ast
 
 
 class FuncVisitor(Visitor):
-    filepath = ""
+    content = ""
     funcs = []
 
-    def __init__(self, filepath):
-        self.filepath = filepath
+    def __init__(self, content):
+        self.content = content
 
     def visit_python(self, language):
-        with open(self.filepath, "r") as file:
-            source = file.read()
-            tree = ast.parse(source)
+        tree = ast.parse(self.content)
         lister = FuncLister()
         lister.visit(tree)
 
-        self.funcs = map(
-            lambda x: Func(
-                x.name,
-                x.lineno,
-                x.end_lineno,
-                ast.get_source_segment(source, x),
-                ast.get_docstring(x),
-            ),
-            lister.funcs,
-        )
+        self.funcs = [
+            Func(x.name, x.lineno, x.end_lineno, ast.get_source_segment(self.content, x), ast.get_docstring(x)) for x in lister.funcs
+        ]

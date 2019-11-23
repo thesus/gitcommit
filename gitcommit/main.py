@@ -70,6 +70,7 @@ class TemplateLoader:
         for renderer in renderers:
             renderer.success()
 
+
 if __name__ == "__main__":
     instance = TemplateLoader("template")
     instance.run()
