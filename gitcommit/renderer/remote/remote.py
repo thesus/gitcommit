@@ -16,6 +16,8 @@ class GitlabRenderer(BaseRenderer):
         self.variables = variables
         self.config = config
 
+        self.mergerequest = None
+
         # Check for token in environment variable and in the config
         if "GITLAB_PRIVATE_TOKEN" in os.environ:
             self.private_token = os.environ["GITLAB_PRIVATE_TOKEN"]
