@@ -42,6 +42,26 @@ class PygitHelper:
 
         return n_files, o_files
 
+    def get_files_tuple(self, rev_a = 0, rev_b = 1):
+        """ Get all files from commit_depth-commit.
+
+        Args:
+            rev_a: Index to start from
+            rev_b: Index to go to
+
+        Returns:
+            files: List of tuple containing new and old files
+        """
+        # Iterate over all commits
+        deltas = self.repo.diff("HEAD~" + str(rev_a), "HEAD~" + str(rev_b)).deltas
+
+        files = []
+        for delta in deltas:
+            files.append((delta.new_file, delta.old_file))
+
+        return files        
+
+
     def get_remote(self):
         """ Get configured remotes
 
@@ -97,3 +117,8 @@ class PygitHelper:
             length -= 1
 
         return commits
+
+
+if __name__ == "__main__":
+    a = PygitHelper()
+    print(a.get_files())
