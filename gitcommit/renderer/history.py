@@ -41,6 +41,7 @@ class HistoryRenderer(BaseRenderer):
                 last_commit = commit
                 continue
 
+            # get diff objects between two commits
             delta = [
                 d.new_file
                 for d in self.pygit.repo.diff(
