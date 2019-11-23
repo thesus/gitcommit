@@ -118,8 +118,7 @@ class PygitHelper:
             if length == 0:
                 return commits
 
-            commits.append(type(commit))
+            commits.append(commit)
             length -= 1
 
         return commits
-
