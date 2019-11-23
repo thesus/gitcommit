@@ -3,7 +3,7 @@ import logging
 from jinja2 import Environment, FileSystemLoader, meta, Template
 
 # from renderer.base import BaseRenderer
-from gitcommit.renderer import GitlabRenderer, HistoryRenderer
+from gitcommit.renderer import GitlabRenderer, HistoryRenderer, MessageRenderer
 
 from gitcommit.config.config import get_config
 
