@@ -24,10 +24,10 @@ class GitlabRenderer(BaseRenderer):
         remotes = pygit.get_remote()
 
         # FIXME: Only a remote named origin works atm
-        match = re.search('(?<=\@)(.*?)(?=\:)', remotes['origin'])
+        match = re.search("(?<=\@)(.*?)(?=\:)", remotes["origin"])
         self.server = "https://" + match.group(0)
 
-        match = re.search('(?<=\:)(.*?)(?=\.git)', remotes['origin'])
+        match = re.search("(?<=\:)(.*?)(?=\.git)", remotes["origin"])
         self.repository = match.group(0)
 
         self.branch = pygit.get_current_branch()
@@ -40,9 +40,7 @@ class GitlabRenderer(BaseRenderer):
             )
         )
 
-        self.connection = gitlab.Gitlab(
-            self.server, private_token=GITLAB_PRIVATE_TOKEN
-        )
+        self.connection = gitlab.Gitlab(self.server, private_token=GITLAB_PRIVATE_TOKEN)
 
         self.connection.auth()
         logger.info("Connecting succesful")
@@ -53,9 +51,7 @@ class GitlabRenderer(BaseRenderer):
 
     def find_mr(self):
         """Returns a list of merge requests for the current branch."""
-        return self.project.mergerequests.list(
-            source_branch=self.branch
-        )
+        return self.project.mergerequests.list(source_branch=self.branch)
 
     def parse_checklist(checklist):
         """Parses a checklist and returns the last unchecked item and a line number.
@@ -103,3 +99,11 @@ class GitlabRenderer(BaseRenderer):
         data = {"remote": {"next_task": item}}
 
         return data
+
+    def success(self):
+        if self.mergerequest:
+            lines = self.mergerequest.description.splitlines()
+            lines[self.line].replace("* [ ]", "* [x]")
+
+            self.mergerequest.description = "".join(lines)
+            self.mergerequest.save()

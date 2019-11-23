@@ -55,16 +55,20 @@ class TemplateLoader:
 
     def run(self):
         data = {}
+        renderers = []
         for renderer_class in RENDERERS:
             renderer = renderer_class(self.variables, self.config)
+            renderers.append(renderer)
 
             data.update(renderer.render_template_data())
 
         rendered = self.template.render(data)
+
         print(rendered)
 
-        # TODO: Run success methods on renderers
-
+        # Run succes methods on rendererers
+        for renderer in renderers:
+            renderer.success()
 
 if __name__ == "__main__":
     instance = TemplateLoader("template")
