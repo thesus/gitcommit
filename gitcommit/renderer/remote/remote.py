@@ -105,7 +105,7 @@ class GitlabRenderer(BaseRenderer):
         return data
 
     def success(self):
-        if self.mergerequest:
+        if self.mergerequest and self.line != -1:
             lines = self.mergerequest.description.splitlines()
             lines[self.line] = lines[self.line].replace("* [ ]", "* [x]")
 

@@ -3,7 +3,7 @@ import logging
 from jinja2 import Environment, FileSystemLoader, meta, Template
 
 # from renderer.base import BaseRenderer
-from gitcommit.renderer import GitlabRenderer
+from gitcommit.renderer import GitlabRenderer, HistoryRenderer
 
 from gitcommit.config.config import get_config
 
@@ -34,7 +34,7 @@ def setup_logging():
 
 setup_logging()
 
-RENDERERS = [GitlabRenderer]
+RENDERERS = [GitlabRenderer, HistoryRenderer]
 # RENDERES = [BaseRenderer]
 
 
