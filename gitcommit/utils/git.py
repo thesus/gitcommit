@@ -21,32 +21,29 @@ class PygitHelper:
                 for line in hunk.lines:
                     yield line.new_lineno, line.old_lineno
 
-    def get_files(self, commit_depth = 1):
+
+    def get_files(self, rev_a = 0, rev_b = 1):
         """ Get all files from commit_depth-commit.
 
         Args:
-            commit_depth: Specify from which commit to get the files from.
-                          e.g. 1 means last, 2 means second last, ... .
+            rev_a: Index to start from
+            rev_b: Index to go to
 
         Returns:
-            files: Files from commit specified above.
+            new_files: Files from new commit specified above.
+            old_files: Files from old commit specified above.
         """
-        #commit = self.repo.walk(self.repo.head.target, GIT_SORT_TIME)[1 - commit_depth]
         # Iterate over all commits 
-        for cw in self.repo.walk(self.repo.head.target, GIT_SORT_TIME):
-            if (commit_depth == 1):
-                commit = cw
-                pass
-            commit_depth -= 1
+        deltas = self.repo.diff("HEAD~" + str(rev_a), "HEAD~" + str(rev_b)).deltas
 
-        commit_files = self.repo.revparse_single(str(commit.id))
-        files = []
-        # Iterate over tree entries of before mentioned commit
-        for entry in commit.tree:
-            files.append(entry.name)
-            #files.append(self.repo[entry.id])
-            
-        return files
+        o_files = []
+        n_files = []
+        for delta in deltas:
+            n_files.append(delta.new_file.id)
+            o_files.append(delta.old_file.id)
+
+        return n_files, o_files
+
 
     def get_remote(self):
         """ Get configured remotes

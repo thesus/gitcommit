@@ -21,6 +21,11 @@ pip install -r requirements/development.txt
 
 Take a look at the cli at `src/main.py`
 
+In order to run it, use:
+```sh
+python -m gitcommit
+```
+
 ## Tests
 To run the tests use pytest in the repo-root.
 
