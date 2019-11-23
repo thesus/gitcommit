@@ -2,7 +2,8 @@ import ast
 
 
 class FuncLister(ast.NodeVisitor):
-    funcs = []
+    def __init__(self):
+        self.funcs = []
 
     def visit_FunctionDef(self, node):
         self.funcs.append(node)

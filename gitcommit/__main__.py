@@ -1,10 +1,10 @@
 import logging
 from jinja2 import Environment, FileSystemLoader, meta, Template
-from gitcommit.renderer import GitlabRenderer, HistoryRenderer, MessageRenderer
+from gitcommit.renderer import GitlabRenderer, HistoryRenderer, MessageRenderer, CodeAnalysisRenderer
 from gitcommit.config.config import get_config
 
 ROOT_DIR = "./"
-RENDERERS = [GitlabRenderer, HistoryRenderer]
+RENDERERS = [GitlabRenderer, CodeAnalysisRenderer, HistoryRenderer, MessageRenderer]
 
 
 def setup_logging():

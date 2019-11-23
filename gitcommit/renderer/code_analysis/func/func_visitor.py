@@ -9,6 +9,7 @@ class FuncVisitor(Visitor):
     funcs = []
 
     def __init__(self, content):
+        Visitor.__init__(self)
         self.content = content
 
     def visit_python(self, language):
@@ -17,12 +18,6 @@ class FuncVisitor(Visitor):
         lister.visit(tree)
 
         self.funcs = [
-            Func(
-                x.name,
-                x.lineno,
-                x.end_lineno,
-                ast.get_source_segment(self.content, x),
-                ast.get_docstring(x),
-            )
+            Func(x.name, x.lineno, x.end_lineno, ast.get_docstring(x),)
             for x in lister.funcs
         ]
