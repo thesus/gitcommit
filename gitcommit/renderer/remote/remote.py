@@ -15,19 +15,24 @@ GITLAB_PRIVATE_TOKEN = os.environ["GITLAB_PRIVATE_TOKEN"]
 
 
 class GitlabRenderer(BaseRenderer):
+    """Searches a merge request for the current branch and proposes commit messages based on them."""
+
     def __init__(self, variables, config):
         self.variables = variables
         self.config = config
 
     def connect(self):
+        """Connects to the API and sets the internal connection parameter."""
         logger.info(
             "Connecting to {} with {} as token".format(
                 GITLAB_INSTANCE_ADDR, GITLAB_PRIVATE_TOKEN
             )
         )
+
         self.connection = gitlab.Gitlab(
             GITLAB_INSTANCE_ADDR, private_token=GITLAB_PRIVATE_TOKEN
         )
+
         self.connection.auth()
         logger.info("Connecting succesful")
 
@@ -67,12 +72,20 @@ class GitlabRenderer(BaseRenderer):
             return mr
 
     def render_template_data(self):
+        """Renders data from the Gitlab API
+
+        Returns:
+            data: dict containing keys with the `remote` prefix
+        """
         self.connect()
         self.project = self.setup_project()
         self.mergerequest = self.crawl_mergerequest()
 
+        logger.info("Write checklist items in the result.")
         if self.mergerequest:
-            item, self.line = GitlabRenderer.parse_checklist(self.mergerequest.description)
+            item, self.line = GitlabRenderer.parse_checklist(
+                self.mergerequest.description
+            )
         else:
             item = None
             self.line = -1
