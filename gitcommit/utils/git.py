@@ -21,7 +21,6 @@ class PygitHelper:
                 for line in hunk.lines:
                     yield line.new_lineno, line.old_lineno
 
-
     def get_files(self, rev_a = 0, rev_b = 1):
         """ Get all files from commit_depth-commit.
 
