@@ -123,7 +123,3 @@ class PygitHelper:
 
         return commits
 
-
-if __name__ == "__main__":
-    a = PygitHelper()
-    print(a.get_files())
