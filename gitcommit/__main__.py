@@ -4,7 +4,7 @@ from gitcommit.renderer import GitlabRenderer, HistoryRenderer, MessageRenderer,
 from gitcommit.config.config import get_config
 
 ROOT_DIR = "./"
-RENDERERS = [CodeAnalysisRenderer, HistoryRenderer]
+RENDERERS = [GitlabRenderer, CodeAnalysisRenderer, HistoryRenderer, MessageRenderer]
 
 
 def setup_logging():
