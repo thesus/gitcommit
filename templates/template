@@ -1,1 +1,5 @@
-{{ remote.next_task }}
+{% if remote.next_task %}
+{{ remote.next_task }}{% endif %}
+{% if history %}# Here is a list with the last commits that changed the same file(s):
+{% for commit in history %}# - ({{ commit.author }}) {{ commit.message }}
+{% endfor %}{% endif %}
