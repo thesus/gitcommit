@@ -22,8 +22,8 @@ class GitlabRenderer(BaseRenderer):
         if "GITLAB_PRIVATE_TOKEN" in os.environ:
             self.private_token = os.environ["GITLAB_PRIVATE_TOKEN"]
             logger.debug("Using environemt variable GITLAB_PRIVATE_TOKEN")
-        elif "gitlab" in self.config.sections() and 'token' in self.config['gitlab']:
-            self.private_token = self.config['gitlab']['token']
+        elif "gitlab" in self.config.sections() and "token" in self.config["gitlab"]:
+            self.private_token = self.config["gitlab"]["token"]
             logger.debug("Using config variable gitlab.token")
         else:
             self.private_token = None
@@ -43,7 +43,6 @@ class GitlabRenderer(BaseRenderer):
 
         # filter current branch
         self.branch = pygit.get_current_branch()
-
 
     def connect(self):
         """Connects to the API and sets the internal connection parameter."""

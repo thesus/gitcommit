@@ -4,6 +4,7 @@ from gitcommit.renderer import BaseRenderer
 
 logger = logging.getLogger("base_renderer")
 
+
 class MessageRenderer(BaseRenderer):
     def __self__(self, variables, config):
         self.variables = variables
@@ -15,8 +16,8 @@ class MessageRenderer(BaseRenderer):
         Returns: 
             data: dict containig random message
         """
-        response = requests.get('http://whatthecommit.com/index.txt')
-        data = {"message": response.content.decode('utf-8')}
+        response = requests.get("http://whatthecommit.com/index.txt")
+        data = {"message": response.content.decode("utf-8")}
 
         return data
 

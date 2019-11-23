@@ -18,6 +18,6 @@ class FuncVisitor(Visitor):
         lister.visit(tree)
 
         self.funcs = [
-            Func(x.name, x.lineno, x.end_lineno, ast.get_docstring(x),)
+            Func(x.name, x.lineno, x.end_lineno, ast.get_docstring(x))
             for x in lister.funcs
         ]

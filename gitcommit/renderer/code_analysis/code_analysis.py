@@ -15,13 +15,25 @@ class CodeAnalysisRenderer(BaseRenderer):
         # get new and old version of changed files from
         changes = self.pygit.get_files_tuple()
         # find newly added files
-        added_files = [FileExtension.get_filename(n.path) for (n, o) in changes if str(o.id) == GIT_OID_HEX_ZERO]
-        removed_files = [FileExtension.get_filename(n.path) for (n, o) in changes if str(n.id) == GIT_OID_HEX_ZERO]
+        added_files = [
+            FileExtension.get_filename(n.path)
+            for (n, o) in changes
+            if str(o.id) == GIT_OID_HEX_ZERO
+        ]
+        removed_files = [
+            FileExtension.get_filename(n.path)
+            for (n, o) in changes
+            if str(n.id) == GIT_OID_HEX_ZERO
+        ]
         result = {"added_files": added_files, "removed_files": removed_files}
         # only look for function changes in existing files
         result.update(
             self.func_changes(
-                [(n, o) for (n, o) in changes if str(o.id) != GIT_OID_HEX_ZERO and str(n.id) != GIT_OID_HEX_ZERO]
+                [
+                    (n, o)
+                    for (n, o) in changes
+                    if str(o.id) != GIT_OID_HEX_ZERO and str(n.id) != GIT_OID_HEX_ZERO
+                ]
             )
         )
         return result
