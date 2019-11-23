@@ -3,6 +3,8 @@ import logging
 from jinja2 import Environment, FileSystemLoader, meta, Template
 
 # from renderer.base import BaseRenderer
+from config.config import get_config
+
 
 ROOT_DIR = "./"
 
@@ -34,6 +36,7 @@ setup_logging()
 RENDERERS = []
 # RENDERES = [BaseRenderer]
 
+
 class TemplateLoader:
     def __init__(self, template_name):
         self.env = Environment(loader=FileSystemLoader(ROOT_DIR + "templates"))
@@ -45,9 +48,14 @@ class TemplateLoader:
         # Load template
         self.template = self.env.get_template(template_name)
 
+        # Load config
+        # TODO: Use different configs for different projects
+        self.config = get_config(ROOT_DIR + "config.ini")
+
+
     def run(self):
         for renderer in RENDERERS:
-            instance = renderer(self.template, self.variables, {})
+            instance = renderer(self.template, self.variables, self.config)
 
             # TODO: is a template renderable multiple times?
             self.template = instance.render_template()
