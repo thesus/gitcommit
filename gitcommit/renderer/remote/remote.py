@@ -16,23 +16,34 @@ class GitlabRenderer(BaseRenderer):
         self.variables = variables
         self.config = config
 
-        pygit = PygitHelper()
+        self.mergerequest = None
 
+        # Check for token in environment variable and in the config
+        if "GITLAB_PRIVATE_TOKEN" in os.environ:
+            self.private_token = os.environ["GITLAB_PRIVATE_TOKEN"]
+            logger.debug("Using environemt variable GITLAB_PRIVATE_TOKEN")
+        elif "gitlab" in self.config.sections() and 'token' in self.config['gitlab']:
+            self.private_token = self.config['gitlab']['token']
+            logger.debug("Using config variable gitlab.token")
+        else:
+            self.private_token = None
+            return
+
+        pygit = PygitHelper()
         remotes = pygit.get_remote()
 
         # FIXME: Only a remote named origin works atm
+        # Filter for gitlab instance
         match = re.search("(?<=\@)(.*?)(?=\:)", remotes["origin"])
         self.server = "https://" + match.group(0)
 
+        # filter for repository
         match = re.search("(?<=\:)(.*?)(?=\.git)", remotes["origin"])
         self.repository = match.group(0)
 
+        # filter current branch
         self.branch = pygit.get_current_branch()
 
-        if "GITLAB_PRIVATE_TOKEN" in os.environ:
-            self.private_token = os.environ["GITLAB_PRIVATE_TOKEN"]
-        else:
-            self.private_token = None
 
     def connect(self):
         """Connects to the API and sets the internal connection parameter."""
