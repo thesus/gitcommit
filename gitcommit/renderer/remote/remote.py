@@ -1,3 +1,5 @@
+from gitcommit.renderer import BaseRenderer
+
 import os
 import logging
 import gitlab
@@ -12,14 +14,10 @@ REPOSITORY = ""
 GITLAB_PRIVATE_TOKEN = os.environ["GITLAB_PRIVATE_TOKEN"]
 
 
-class GitlabRenderer:
-    def __init__(self, template, variables, config):
-        self.template = template
+class GitlabRenderer(BaseRenderer):
+    def __init__(self, variables, config):
         self.variables = variables
         self.config = config
-
-        # self.connect()
-        # self.project = self.find_project()
 
     def connect(self):
         logger.info(
@@ -33,7 +31,7 @@ class GitlabRenderer:
         self.connection.auth()
         logger.info("Connecting succesful")
 
-    def find_project(self):
+    def setup_project(self):
         """Returns the id of a given project."""
         # TODO (till): find project dynamically
         return self.connection.projects.get("ge39rec/gitcommit")
@@ -56,13 +54,29 @@ class GitlabRenderer:
         return None, -1
 
     def crawl_mergerequest(self):
-        mrs = find_mr()
+        logger.info("Searching for merge request")
+        mrs = self.find_mr()
         # If there's no merge request to a branch, we can't infer information from the remote
         if len(mrs) == 0:
-            return
+            logger.info("No Merge Request found.")
+            return None
         # For now only work with the first mr in the result
         else:
-            mr = mr[0]
+            mr = mrs[0]
+            logger.info("Found Merge Request, using {}".format(mr.title))
+            return mr
 
-    def render_template(self):
-        pass
+    def render_template_data(self):
+        self.connect()
+        self.project = self.setup_project()
+        self.mergerequest = self.crawl_mergerequest()
+
+        if self.mergerequest:
+            item, self.line = GitlabRenderer.parse_checklist(self.mergerequest.description)
+        else:
+            item = None
+            self.line = -1
+
+        data = {"remote": {"next_task": item}}
+
+        return data
