@@ -12,7 +12,7 @@ def function():
     return None"""
 
     visitor = FuncVisitor(content)
-    visitor.visit(PythonLanguage())
+    visitor.visit_python(PythonLanguage())
     assert len(visitor.funcs) == 2
     func_test = visitor.funcs[0]
     func_function = visitor.funcs[1];

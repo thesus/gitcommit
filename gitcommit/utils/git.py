@@ -9,16 +9,16 @@ class PygitHelper:
         """
         self.repo = Repository(os.getcwd())
 
-    def get_diff(self, filepath, commit_depth=1):
+    def get_diff(self, id_a, id_b):
         """ Get different lines of a staged file and the its commit_depth-commit version.
 
         Returns:
             files: Mapping from old lines numbers to new line numbers
         """
-        for patch in self.repo.diff():
-            for hunk in patch.hunks:
-                for line in hunk.lines:
-                    yield line.new_lineno, line.old_lineno
+        patch = self.repo[id_b].diff(self.repo[id_a])
+        for hunk in patch.hunks:
+            for line in hunk.lines:
+                yield line.new_lineno, line.old_lineno
 
     def get_files(self, rev_a=0, rev_b=None):
         """ Get all files from commit_depth-commit.
