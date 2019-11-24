@@ -1,3 +1,4 @@
+import os
 import logging
 from jinja2 import Environment, FileSystemLoader, meta, Template
 from gitcommit.renderer import (
@@ -36,14 +37,18 @@ def setup_logging():
 
 class TemplateLoader:
     def __init__(self, template_name):
-        self.env = Environment(loader=FileSystemLoader(ROOT_DIR + "templates"))
-        # Load source of the template
-        source = self.env.loader.get_source(self.env, template_name)
+        self.env = Environment(trim_blocks=True, lstrip_blocks=True)
+
+        if os.path.isfile('.igitcommit'):
+            with open('.igitcommit') as f:
+                template = f.read()
+        else:
+            from gitcommit.template import template
+
+        self.template = self.env.from_string(template)
 
         # Preprocess file to find unused variables
-        self.variables = meta.find_undeclared_variables(self.env.parse(source))
-        # Load template
-        self.template = self.env.get_template(template_name)
+        self.variables = meta.find_undeclared_variables(self.env.parse(template))
 
         # Load config
         # TODO: Use different configs for different projects
@@ -68,6 +73,7 @@ class TemplateLoader:
 
 
 if __name__ == "__main__":
+    #
     setup_logging()
 
     instance = TemplateLoader("template")
