@@ -11,3 +11,5 @@ __pycache__
 
 # configuration
 config.ini
+.igitcommit
+igit_pkg.egg-info

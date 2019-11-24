@@ -34,3 +34,8 @@ pytest --cov gitcommit
 ```
 
 This runs all tests and prints the current coverage to the terminal.
+
+## Building
+To build and install the programm run `pip install -e .`
+
+You can access it via `igit`

@@ -45,6 +45,7 @@ class TemplateLoader:
         else:
             from gitcommit.template import template
 
+        # Load template with the given environment
         self.template = self.env.from_string(template)
 
         # Preprocess file to find unused variables
