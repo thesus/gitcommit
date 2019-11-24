@@ -20,12 +20,6 @@ class FuncVisitor(Visitor):
 
         filename = FileExtension.get_filename(filepath)
         self.funcs = [
-            Func(
-                x.name,
-                x.lineno,
-                x.end_lineno,
-                ast.get_docstring(x),
-                filename
-            )
+            Func(x.name, x.lineno, x.end_lineno, ast.get_docstring(x), filename)
             for x in lister.funcs
         ]

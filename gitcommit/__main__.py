@@ -39,8 +39,10 @@ class TemplateLoader:
     def __init__(self, template_name):
         self.env = Environment(trim_blocks=True, lstrip_blocks=True)
 
-        if os.path.isfile('.igitcommit'):
-            with open('.igitcommit') as f:
+        # Load template from local .igitcommit file, otherwise use default template
+        # TODO: Traverse to root dirs to find the file even from subdirectories
+        if os.path.isfile(".igitcommit"):
+            with open(".igitcommit") as f:
                 template = f.read()
         else:
             from gitcommit.template import template
@@ -58,6 +60,7 @@ class TemplateLoader:
     def run(self):
         data = {}
         renderers = []
+        # Join all results and render them in a template
         for renderer_class in RENDERERS:
             renderer = renderer_class(self.variables, self.config)
             renderers.append(renderer)
@@ -68,13 +71,12 @@ class TemplateLoader:
 
         print(rendered)
 
-        # Run succes methods on rendererers
+        # Run success methods on rendererers after rendering completed
         for renderer in renderers:
             renderer.success()
 
 
 if __name__ == "__main__":
-    #
     setup_logging()
 
     instance = TemplateLoader("template")
